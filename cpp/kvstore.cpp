@@ -1,13 +1,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
+#define COLUMN_USERNAME_SIZE 32
+#define COLUMN_EMAIL_SIZE 255
+#define TABLE_MAX_ROWS 1000
+#define TABLE_MAX_PAGES 100
+#define PAGE_SIZE 4096
+// Constants for the database
 struct InputBuffer {
     string buffer;
     size_t buffer_length;
     ssize_t input_length;
     
 };
+
+struct Row {
+    int id;
+    string name;
+    string email;
+};
+
+
 
 typedef enum {
     META_COMMAND_SUCCESS,
@@ -26,6 +39,7 @@ typedef enum {
 
 typedef struct {
   StatementType type;
+  Row row_to_insert;
 } Statement;
 
 InputBuffer new_buffer() {
@@ -65,6 +79,8 @@ PrepareStatus prepare_statement(Statement &statement, InputBuffer &input_buffer)
     string input = input_buffer.buffer;
     if (input.substr(0, 6) == "insert") {
         statement.type = STATEMENT_INSERT;
+        sscanf(input_buffer->buffer, "insert %d %s %s", &(statement.row_to_insert.id), 
+        statement.row_to_insert.username, statement.row_to_insert.email);
         return PREPARE_SUCCESS;
     } else if (input.substr(0, 6) == "select") {
         statement.type = STATEMENT_SELECT;
